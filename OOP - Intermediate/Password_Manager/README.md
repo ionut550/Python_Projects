@@ -1,4 +1,4 @@
-#Password Manager Project
+# Password Manager Project
 
 This is an application which will generate a strong password and store it locally.
 I used the Tkinter as GUI. 
