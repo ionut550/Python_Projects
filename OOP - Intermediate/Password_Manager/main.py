@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import random
 import pyperclip
+import json
 
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
@@ -31,6 +32,12 @@ def save():
     website = website_entry.get()
     user = user_entry.get()
     password = password_entry.get()
+    new_data = {
+        website: {
+            "email": user,
+            "password": password,
+        }
+    }
 
     if website == "website.com" or user == "example@gmail.com" or password == "":
         messagebox.showinfo(title="Oops", message="Please don't leave any fields empty!")
@@ -40,8 +47,20 @@ def save():
                                                                 f"\nIs is ok to save?")
 
         if message:
-            with open("data.txt", "a") as file:
-                file.write(f"{website} | {user} | {password} \n")
+            try:
+                # Reading and updating the old data
+                with open("data.json", "r") as data_file:
+                    data = json.load(data_file)
+                    data.update(new_data)
+            except FileNotFoundError:
+                with open("data.json", "w") as data_file:
+                    json.dump(new_data, data_file,indent=4)
+            else:
+                #Saving updated data
+                with open("data.json", "w") as data_file:
+                    json.dump(data, data_file, indent=4)
+
+            #Clear the entries
             website_entry.delete(0, END)
             handle_focus_out_website("")
             user_entry.delete(0, END)
@@ -78,6 +97,19 @@ def handle_focus_out_website(_):
         website_entry.config(fg="Gray")
         website_entry.insert(0, "website.com")
 
+def find_password():
+    try:
+        with open("data.json","r") as data_file:
+            data = json.load(data_file)
+    except FileNotFoundError:
+        messagebox.showinfo(message="The file is empty")
+    else:
+        try:
+            details = data[website_entry.get()]
+            messagebox.showinfo(title=website_entry.get(), message=f"These are the details: "
+                                                                    f"\nEmail: {details['email']}\nPassword: {details['password']}")
+        except:
+            messagebox.showinfo(title="Ops",message="There is no data for this website!")
 
 # Logo
 canvas = Canvas(width=200, height=200)
@@ -88,8 +120,8 @@ canvas.grid(row=0, column=1)
 # Website
 website_label = Label(text="Website:")
 website_label.grid(row=1, column=0)
-website_entry = Entry(width=52, fg="gray")
-website_entry.grid(row=1, column=1, columnspan=2)
+website_entry = Entry(width=34, fg="gray")
+website_entry.grid(row=1, column=1)
 website_entry.insert(0, "website.com")
 website_entry.bind("<FocusIn>", handle_focus_in_website)
 website_entry.bind("<FocusOut>", handle_focus_out_website)
@@ -114,5 +146,7 @@ generate_button = Button(text="Generate Password", command=generate_password)
 generate_button.grid(row=3, column=2)
 add_button = Button(text="Add", width=44, command=save)
 add_button.grid(row=4, column=1, columnspan=2)
+search_button = Button(text="Search",command=find_password,width=14)
+search_button.grid(row=1,column=2)
 
 window.mainloop()
