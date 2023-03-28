@@ -39,7 +39,7 @@ def save():
         }
     }
 
-    if website == "website.com" or user == "example@gmail.com" or password == "":
+    if website == "website.com" or website == "" or user == "example@gmail.com" or user == "" or password == "":
         messagebox.showinfo(title="Oops", message="Please don't leave any fields empty!")
     else:
         message = messagebox.askokcancel(title=website, message=f"These are the details entered:"
