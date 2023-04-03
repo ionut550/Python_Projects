@@ -3,7 +3,7 @@ from twilio.rest import Client
 
 MY_LAT = 44.3305
 MY_LNG = 26.0744
-API_KEY = "b8f5ea58ce70a82daf8f8d6a88d7c447"
+API_KEY = "openweathermap KEY"
 ENDPOINT = "https://api.openweathermap.org/data/2.5/weather"
 
 account_sid = 'Your sid'
